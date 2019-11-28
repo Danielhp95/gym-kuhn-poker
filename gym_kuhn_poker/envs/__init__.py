@@ -1,0 +1,1 @@
+from gym_kuhn_poker.envs.kuhn_poker_env import KuhnPokerEnv
