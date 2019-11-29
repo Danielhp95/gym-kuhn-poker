@@ -29,6 +29,7 @@ class KuhnPokerEnv(gym.Env):
         '''
 
         '''
+        self.done = False
         self.number_of_players = number_of_players
         self.deck_size = deck_size # DEFAULT: Jack, Queen and King
         self.betting_rounds = betting_rounds
@@ -37,7 +38,9 @@ class KuhnPokerEnv(gym.Env):
         self.action_space = Discrete(len(ActionType))
         self.action_space_size = len(ActionType)
 
-        self.observation_space = self.calculate_observation_space()
+        single_observation_space = self.calculate_observation_space()
+        self.observation_space = Tuple([single_observation_space
+                                       for _ in range(self.number_of_players)])
         self.state_space_size = None # len(self.random_initial_state_vector())
 
         self.betting_history_index = (self.number_of_players +
@@ -204,13 +207,11 @@ class KuhnPokerEnv(gym.Env):
         player_id  = OneHotEncoding(self.number_of_players)
         dealt_card = OneHotEncoding(self.deck_size)
 
-        p1_checks_or_bets = OneHotEncoding(len(ActionType) + 1)
-        p2_checks_or_bets = OneHotEncoding(len(ActionType) + 1)
-        p1_final_fold_or_bet = OneHotEncoding(len(ActionType) + 1)
+        betting_states = [OneHotEncoding(len(ActionType) + 1)
+                          for _ in range(self.number_of_players)
+                          for _ in range(self.betting_rounds)]
         pot_contributions = Tuple([Discrete(3) for _ in range(self.number_of_players)])
-        return Tuple([player_id, dealt_card,
-                      p1_checks_or_bets, p2_checks_or_bets,
-                      p1_final_fold_or_bet, pot_contributions])
+        return Tuple([player_id, dealt_card, *betting_states, pot_contributions])
 
     def calculate_observation_space_size(self):
         '''
