@@ -25,7 +25,9 @@ We argue that `CHECK` dominates `PASS` dominates `PASS`,
 and hence we eliminate it from the action space. This has the advantage
 of ensuring that on every time step there's only 2 possible actions.
 
-### State / Observation space
+## State / Observation space
+
+### State space
 
 The state space represents the **internal environment state**. 
 It is the concatenation of the following vectors:
@@ -39,7 +41,7 @@ of player 1 to the pot. It includes player's `antes`.
 Example  (spaces added for visual clarification):
 
 ```python
-[1, 0,   0, 0, 1, 0, 1, 0,   0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0,   1, 2]
+[1, 0,   0, 0, 1,  0, 1, 0,   0, 1, 0,  0, 0, 1,  1, 0, 0,  1, 0, 0,   1, 2]
 ```
 **Description:**
 + It is player's 1 turn
@@ -47,10 +49,29 @@ Example  (spaces added for visual clarification):
 + Player one has `PASS`ed, followed by player 2's `BET`.
 + Player 1 has contributed (1) to the pot and player 2 contributed (2).
 
-### Reward vector
+
+### Observation space
+Each player recieves an observation which is a **strict subset of the state space**.
+The observation for player `i` contains:
++ `Player id`: One hot encoding of the player's id.
++ `Dealt card`: One hot encoding of card dealt to player `i`.
++ `Betting history`: Same as above.
++ `Pot contributions`: Same as above.
+
+
+Example observation for player `1` from the example state above (spaces added for visual clarification):
+
+```python
+[1, 0,   0, 0, 1,   0, 1, 0,  0, 0, 1,  1, 0, 0,  1, 0, 0,   1, 2]
+```
+
+Thus, player's **do not** have access to other player's cards nor the cards which have not been dealt.
+
+## Reward vector
 
 Each state transition is associated with a reward vector `r = [r_1, r_2]`,
-where `r_1` is the scalar `float` reward associated to player 1.
+where `r_1` is the scalar `float` reward associated to player 1. The reward function
+works as in standard poker.
 
 ## Usage & Configuration
 
