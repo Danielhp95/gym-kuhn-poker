@@ -16,6 +16,42 @@ the player with the higher card wins, otherwise, the betting player wins.
 
 [Wikipedia Explanation of Kuhn's poker](https://www.wikiwand.com/en/Kuhn_poker)
 
+## Action space
+
+The action space is **discrete**, containing two actions: `[PASS, BET]`.
+
+NOTE: original Kuhn's game contains a third move `CHECK`.
+We argue that `CHECK` dominates `PASS` dominates `PASS`,
+and hence we eliminate it from the action space. This has the advantage
+of ensuring that on every time step there's only 2 possible actions.
+
+### State / Observation space
+
+The state space represents the **internal environment state**. 
+It is the concatenation of the following vectors:
+
++ `Current player`. One hot encoding for current player.
++ `Player hand`. One hot encoding of which card *each* player has.
++ `Betting history`. One hot encoding of whether **each** player `PASS`ed or `BET`ted.
++ `Pot contributions`. A vector `p = [p_1, p_2]`, where `p_1` corresponds to the contribution
+of player 1 to the pot. It includes player's `antes`.
+
+Example  (spaces added for visual clarification):
+
+```python
+[1, 0,   0, 0, 1, 0, 1, 0,   0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0,   1, 2]
+```
+**Description:**
++ It is player's 1 turn
++ Player 1 has card 3 and player 2 has card 2.
++ Player one has `PASS`ed, followed by player 2's `BET`.
++ Player 1 has contributed (1) to the pot and player 2 contributed (2).
+
+### Reward vector
+
+Each state transition is associated with a reward vector `r = [r_1, r_2]`,
+where `r_1` is the scalar `float` reward associated to player 1.
+
 ## Usage & Configuration
 
 `gym` must be installed. An Kuhn's poker environment can be created via running inside a `python` interpreter:
