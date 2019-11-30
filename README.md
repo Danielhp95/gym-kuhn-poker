@@ -1,6 +1,6 @@
 # gym-kuhn-poker
 
-![Kuhn's poker tree]('./Kuhn_poker_tree.png')
+![Kuhn's poker tree](https://raw.githubusercontent.com/Danielhp95/gym-kuhn-poker/master/Kuhn_poker_tree.png)
 
 Kuhn poker implemented in accordance to OpenAI gym interface.
 
