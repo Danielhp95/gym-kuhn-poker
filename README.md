@@ -18,7 +18,7 @@ the player with the higher card wins, otherwise, the betting player wins.
 
 ## Usage & Configuration
 
-`gym` must be installed. An Kuhn's poker environment can be created via running:
+`gym` must be installed. An Kuhn's poker environment can be created via running inside a `python` interpreter:
 
 ```python
 >>> import gym
@@ -26,7 +26,7 @@ the player with the higher card wins, otherwise, the betting player wins.
 >>> env = gym.make('KuhnPoker-v0', **dict()) # optional secondary argument
 ```
 
-The environment takes the following parameters from `gym.make`
+The `dict()` in the expression above includes keyword arguments for the underlying environment:
 + `number_of_players`: Number of players (Default 2).
 + `deck_size`: Size of the deck from which cards will be drawn, one for each player (Default 3).
 + `betting_rounds`: Number of times that (Default: 2).
