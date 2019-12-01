@@ -15,25 +15,26 @@ class ActionType(enum.Enum):
 
 class KuhnPokerEnv(gym.Env):
     '''
-    TODO: describe game
-    '''
-    '''
-    TODO:
-    - Compute representation size for information set
-    - Create internal real state
-    - (History) Step function
-    - Step functino
+    Implementation of Kuhn's poker in accordance to OpenAI gym environment interface.
     '''
 
     def __init__(self, number_of_players=2, deck_size=3, betting_rounds=2, ante=1):
         '''
-
+        :param number_of_players: Number of players (Default 2).
+        :param deck_size: Size of the deck from which cards will be drawn, one for each player (Default 3).
+        :param betting_rounds: Number of times that (Default: 2).
+        :param ante: Amount of utility that all players must pay at the beginning of an episode (Default 1).
         '''
+        assert number_of_players >= 2, "Game must be played with at least 2 players"
+        assert deck_size >= number_of_players, "The deck of cards must contain at least one card per player"
+        assert betting_rounds >= 2, "The deck of cards must contain at least one card per player"
+        assert ante >= 1, "Minimun ante must be one"
+
         self.done = False
         self.number_of_players = number_of_players
-        self.deck_size = deck_size # DEFAULT: Jack, Queen and King
+        self.deck_size = deck_size
         self.betting_rounds = betting_rounds
-        self.ante = ante # Mandatory utility to be bet at the begginning of an episode
+        self.ante = ante
 
         self.action_space = Discrete(len(ActionType))
         self.action_space_size = len(ActionType)
@@ -41,7 +42,7 @@ class KuhnPokerEnv(gym.Env):
         single_observation_space = self.calculate_observation_space()
         self.observation_space = Tuple([single_observation_space
                                        for _ in range(self.number_of_players)])
-        self.state_space_size = None # len(self.random_initial_state_vector())
+        self.state_space_size = None # TODO len(self.random_initial_state_vector())
 
         self.betting_history_index = (self.number_of_players +
                                       self.number_of_players * self.deck_size)
@@ -203,7 +204,6 @@ class KuhnPokerEnv(gym.Env):
         return encoded_id + player_card + betting_history_and_pot
 
     def calculate_observation_space(self):
-        # Maybe + 1 if card hasn't been dealt. But do we care about that?
         player_id  = OneHotEncoding(self.number_of_players)
         dealt_card = OneHotEncoding(self.deck_size)
 
@@ -213,17 +213,5 @@ class KuhnPokerEnv(gym.Env):
         pot_contributions = Tuple([Discrete(3) for _ in range(self.number_of_players)])
         return Tuple([player_id, dealt_card, *betting_states, pot_contributions])
 
-    def calculate_observation_space_size(self):
-        '''
-        One-hot for whose turn it is.
-        One-hot encoding for the single private card. (n+1 cards = n+1 bits)
-        Followed by 2 (n - 1 + n) bits for betting sequence (longest sequence:
-        everyone except one player can pass and then everyone can bet/pass).
-        n + n + 1 + 2 (n-1 + n) = 6n - 1.
-        '''
-        pass
-
     def render(self, mode='human', close=False):
-        # print cards per player
-        # Print history. Look up how to change the str() value of an enum
         raise NotImplementedError('Rendering has not been coded yet')
