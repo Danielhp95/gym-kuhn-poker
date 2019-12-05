@@ -60,7 +60,7 @@ class KuhnPokerEnv(gym.Env):
                 for i in range(self.number_of_players)]
 
     def step(self, action):
-        assert isinstance(action, int) and 0 <= action <= len(ActionType), \
+        assert 0 <= action <= len(ActionType), \
                f"Action outside of valid range: [0,{len(ActionType)}]"
         assert not self.done, "Episode is over"
         move = ActionType(action)
